@@ -1,20 +1,23 @@
-import React, {useContext} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {Context} from "../index";
-import {Link} from "react-router-dom";
-import {CATALOG_ROUTE, SHOP_ROUTE, LOGIN_ROUTE} from "../utils/consts";
+import {Link, useNavigate} from "react-router-dom";
+import {CATALOG_ROUTE, LOGIN_ROUTE, SHOP_ROUTE} from "../utils/consts";
 import {Button, Container} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
-import {useNavigate} from "react-router-dom";
+import {CartList} from "./Cart/CartList";
+import {BasketContext} from "../store/BasketStore";
 
 export const NavBar = observer(() => {
     const history = useNavigate()
     const {user} = useContext(Context)
-
+    const {clearCart} = useContext(BasketContext)
     const logOut = () => {
+        localStorage.removeItem('cart')
+        localStorage.removeItem('token')
         user.setUser({})
         user.setIsAuth(false)
-        localStorage.removeItem('accessToken')
-        localStorage.removeItem('refreshToken')
+        clearCart()
+        window.location.reload()
     }
     return (<div>
         <nav className="navbar navbar-light navbar-expand-md bg-white bg-gradient py-3">
@@ -48,9 +51,7 @@ export const NavBar = observer(() => {
                                 <Button onClick={() => history(LOGIN_ROUTE)}>Авторизоваться</Button>
                             </ul>
                         }
-                        {/*    <Cart items={props.items} setItems={props.setItems} itemsCount={props.itemsCount} total={props.total}*/}
-                        {/*          addToCart={props.addCart}*/}
-                        {/*removeCart={props.removeCart}/>*/}
+                        <CartList/>
                     </div>
                 </Container>
             </div>

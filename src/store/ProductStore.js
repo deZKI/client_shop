@@ -12,36 +12,45 @@ export default class ProductStore {
                 name: "Product 1",
                 id: 1,
                 rating: 4.5,
+                price: 1000.00,
                 img_name: "product1.jpg"
             },
             {
                 name: "Product 2",
                 id: 2,
                 rating: 3.8,
+                price: 1000.00,
                 img_name: "product2.jpg"
             },
             {
                 name: "Product 3",
                 id: 3,
                 rating: 4.2,
+                price: 1000.00,
                 img_name: "product3.jpg"
             },
             {
                 name: "Product 4",
                 id: 4,
                 rating: 4.9,
-                img_name: "product4.jpg"
+                img_name: "product4.jpg",
+                price: 1000.00,
             }
         ]
         this._selectedTag = {}
         this._page = 1
         this._totalCount = 0
         this._limit = 3
+        this._price = 1000
         makeAutoObservable(this)
     }
 
     setProducts(products) {
         this._products = products
+    }
+
+    setPrice(price) {
+        this._price = price
     }
 
     setSelectedTags(tags) {
@@ -59,6 +68,10 @@ export default class ProductStore {
 
     get tags() {
         return this._tags
+    }
+
+    get price() {
+        return this._price
     }
 
     get products() {
