@@ -5,10 +5,10 @@ import {Row} from "react-bootstrap";
 import ProductItem from "./ProductItem";
 
 const ProductList = observer(() => {
-    const {product} = useContext(Context)
+    const {products} = useContext(Context)
     return (
         <Row className="d-flex">
-            {product.products.map(product =>
+            {products.products.map(product =>
                 <ProductItem key={product.id} product={product}/>
             )}
         </Row>

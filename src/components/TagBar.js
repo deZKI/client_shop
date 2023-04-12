@@ -1,25 +1,32 @@
 import React, {useContext} from 'react';
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
-import Col from "react-bootstrap/Col";
-import ListGroup from "react-bootstrap/ListGroup";
+import {Accordion, Card, Form} from 'react-bootstrap';
 
 const TagBar = observer(() => {
-    const {product} = useContext(Context)
+    const {products} = useContext(Context)
+    // console.log(product.tags)
     return (
-        <ListGroup>
-            {product.tags.map(type =>
-                <ListGroup.Item
-                    style={{cursor: 'pointer'}}
-                    active={type.id === product.selectedTag.id}
-                    onClick={() => product.setSelectedTags(type)}
-                    key={type.id}
-                >
-                    {type.name}
-                </ListGroup.Item>
-            )}
-        </ListGroup>
+        <Card>
+            <Accordion.Item eventKey="0">
+                <Accordion.Header>Категории</Accordion.Header>
+            </Accordion.Item>
+            <Accordion.Collapse eventKey="0">
+                <Card.Body>
+                    {products.tags.map((tag) => (
+                        <Form.Check
+                            type="checkbox"
+                            label={tag.name}
+                            style={{cursor: 'pointer'}}
+                            checked={tag.id === products.selectedTag.id}
+                            onClick={() => products.setSelectedTags(tag)}
+                            key={tag.id}
+                        />
+                    ))}
+                </Card.Body>
+            </Accordion.Collapse>
+        </Card>
     );
-});
+})
 
-export default TagBar;
+export default TagBar

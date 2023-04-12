@@ -1,9 +1,12 @@
-// import {$authHost, $host} from "./index";
-// import jwt_decode from "jwt-decode";
-//
-// export const createTag = async (tag) => {
-//     const {data} = await $autHost.post('api/tags/', {username, password, role: 'ADMIN'})
-//     localStorage.setItem('token', data.auth_token)
-//     return jwt_decode(data.token)
-// }
+import {$authHost, $host} from "./index";
 
+
+export const fetchTags = async () => {
+    const {data} = await $host.get('api/tags/')
+    return data
+}
+
+export const fetchtColors = async () => {
+    const {data} = await $host.get('api/colors')
+    return data
+}

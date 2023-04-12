@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import {NavLink, useLocation, useNavigate} from "react-router-dom";
 import {CATALOG_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE} from "../utils/consts";
-import {basket, login, registration} from "../http/userAPI";
+import {basketAPI, loginAPI, registrationAPI} from "../http/userAPI";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
 import {BasketContext} from "../store/BasketStore";
@@ -16,11 +16,12 @@ const Auth = observer(() => {
     const isLogin = location.pathname === LOGIN_ROUTE
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const [password2, setPassword2] = useState('')
     const [email, setEmail] = useState('')
     const {updateBasket} = useContext(BasketContext)
 
     async function fetchBasket() {
-       basket().then((response) => response) // Распарсим JSON-ответ
+        basketAPI().then((response) => response) // Распарсим JSON-ответ
             .then((data) => {
                 updateBasket(data.data);
             });
@@ -29,14 +30,31 @@ const Auth = observer(() => {
     const click = async () => {
         try {
             if (isLogin) {
-                login(username, password).then(fetchBasket);
+                loginAPI(username, password).then(() => {
+                    fetchBasket()
+                    user.setUser(username)
+                    user.setIsAuth(true)
+                    history(CATALOG_ROUTE)
+                }).catch((error) => {
+                    // Здесь выполняется код при возникновении ошибки в методе login
+                    alert('не удалось войти');
+                })
             } else {
-                registration(username, password, email);
+                if (password !== password2) {
+                    alert('Пароли не совпадают');
+                    return;
+                }
+                registrationAPI(username, email, password)
+                    .then(response => {
+                        history(LOGIN_ROUTE)
+                    })
+                    .catch(error => {
+                        // Обработка ошибки
+                        const errorMessages = Object.values(error).join('\n');
+                        alert('Не удалось создать аккаунт:\n' + errorMessages);
+                    });
             }
-            user.setUser(username)
-            user.setIsAuth(true)
 
-            history(CATALOG_ROUTE)
         } catch (e) {
             alert(e)
         }
@@ -72,6 +90,14 @@ const Auth = observer(() => {
                         onChange={e => setPassword(e.target.value)}
                         type="password"
                     />
+                    {isLogin ? '' :
+                        <Form.Control
+                            className="mt-3"
+                            placeholder="Повторите пароль..."
+                            value={password2}
+                            onChange={e => setPassword2(e.target.value)}
+                        />
+                    }
                     <Row className="d-flex justify-content-between mt-3 pl-3 pr-3">
                         {isLogin ?
                             <div>

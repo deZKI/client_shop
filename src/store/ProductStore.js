@@ -3,9 +3,6 @@ import {makeAutoObservable} from "mobx";
 export default class ProductStore {
     constructor() {
         this._tags = [
-            {id: 1, name: 'Шапки'},
-            {id: 2, name: 'Шапки'},
-            {id: 3, name: 'Шапки'}
         ]
         this._products = [
             {
@@ -53,6 +50,9 @@ export default class ProductStore {
         this._price = price
     }
 
+    setTags(tags){
+        this._tags = tags
+    }
     setSelectedTags(tags) {
         this.setPage(1)
         this._selectedTag = tags

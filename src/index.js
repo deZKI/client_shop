@@ -11,7 +11,7 @@ root.render(
     <BasketContextProvider>
         <Context.Provider value={{
             user: new UserStore(),
-            product: new ProductStore(),
+            products: new ProductStore(),
         }}>
                 <App/>
         </Context.Provider>

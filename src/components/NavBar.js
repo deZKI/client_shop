@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext} from 'react'
 import {Context} from "../index";
 import {Link, useNavigate} from "react-router-dom";
 import {CATALOG_ROUTE, LOGIN_ROUTE, SHOP_ROUTE} from "../utils/consts";
@@ -6,18 +6,16 @@ import {Button, Container} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import {CartList} from "./Cart/CartList";
 import {BasketContext} from "../store/BasketStore";
+import {logoutAPI} from "../http/userAPI";
 
 export const NavBar = observer(() => {
     const history = useNavigate()
     const {user} = useContext(Context)
     const {clearCart} = useContext(BasketContext)
     const logOut = () => {
-        localStorage.removeItem('cart')
-        localStorage.removeItem('token')
         user.setUser({})
         user.setIsAuth(false)
-        clearCart()
-        window.location.reload()
+        logoutAPI().then(() => window.location.reload())
     }
     return (<div>
         <nav className="navbar navbar-light navbar-expand-md bg-white bg-gradient py-3">

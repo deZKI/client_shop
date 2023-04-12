@@ -1,5 +1,5 @@
 import React, {createContext, useEffect, useState, useContext} from 'react';
-import {deleteFromBasket} from "../http/userAPI";
+import {deleteFromBasketAPI} from "../http/userAPI";
 import {Context} from "../index";
 
 export const BasketContext = createContext();
@@ -54,7 +54,7 @@ export function BasketContextProvider(props) {
     const itemIndex = items.findIndex(item => item.name === itemName)
     if (localStorage.getItem('token')) {
       const item = items.find(item => item.name === itemName)
-      deleteFromBasket(item.basket_id, item.id, item.count - 1)
+      deleteFromBasketAPI(item.basket_id, item.id, item.count - 1)
     }
     if (itemIndex !== -1) {
       const newItems = [...items];

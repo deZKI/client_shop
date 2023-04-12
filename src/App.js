@@ -4,7 +4,7 @@ import {NavBar} from "./components/NavBar"
 import {useContext, useEffect, useState} from "react";
 import {Context} from "./index";
 import {observer} from "mobx-react-lite"
-import {basket} from "./http/userAPI";
+import {basket, basketAPI} from "./http/userAPI";
 import {Spinner} from "react-bootstrap";
 import {Footer} from "./components/Footer";
 import {BasketContext} from "./store/BasketStore";
@@ -16,7 +16,7 @@ const App = observer(() => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        basket()
+        basketAPI()
             .then((response) => response) // Распарсим JSON-ответ
             .then((data) => {
                 user.setIsAuth(true)
