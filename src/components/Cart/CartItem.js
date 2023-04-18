@@ -9,7 +9,7 @@ function CartItem(props) {
         onRemove(item.name, item.price);
     }
     function handleAdd(){
-       onAdd(item.name, item.price)
+       onAdd(item.id, item.name, item.price)
     }
     function total(){
         return (item.price * item.count)

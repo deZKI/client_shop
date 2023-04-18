@@ -1,5 +1,5 @@
-import React, {createContext, useEffect, useState, useContext} from 'react';
-import {deleteFromBasketAPI} from "../http/userAPI";
+import React, {createContext, useContext, useEffect, useState} from 'react';
+import {addToBasketAPI, deleteFromBasketAPI} from "../http/userAPI";
 import {Context} from "../index";
 
 export const BasketContext = createContext();
@@ -8,6 +8,8 @@ export function BasketContextProvider(props) {
   const [items, setItems] = useState([]);
   const [itemCount, setItemCount] = useState(0);
   const [total, setTotal] = useState(0);
+  const {user} = useContext(Context)
+
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem('cart'));
     if (savedCart) {
@@ -17,9 +19,11 @@ export function BasketContextProvider(props) {
     }
   }, []);
 
-  function addToCart(itemName, itemPrice) {
-    const itemIndex = items.findIndex(item => item.name === itemName);
-
+  function addToCart(itemId, itemName, itemPrice) {
+    const itemIndex = items.findIndex(item => item.id === itemId);
+    if(user.isAuth){
+      addToBasketAPI(itemId)
+    }
     if (itemIndex !== -1) {
       const newItems = [...items];
       newItems[itemIndex].count += 1;
@@ -27,7 +31,7 @@ export function BasketContextProvider(props) {
       setItemCount(itemCount + 1);
       setTotal(total + itemPrice);
     } else {
-      setItems([...items, {name: itemName, price: itemPrice, count: 1}]);
+      setItems([...items, {id: itemId, name: itemName, price: itemPrice, count: 1}]);
       setItemCount(itemCount + 1);
       setTotal(total + itemPrice);
     }
@@ -48,11 +52,12 @@ export function BasketContextProvider(props) {
     setItems(newItems)
     setItemCount(newItems.length);
     setTotal(newItems.reduce((acc, item) => acc + item.price * item.count, 0));
+
   }
 
   function removeFromCart(itemName, itemPrice) {
     const itemIndex = items.findIndex(item => item.name === itemName)
-    if (localStorage.getItem('token')) {
+    if (user.isAuth) {
       const item = items.find(item => item.name === itemName)
       deleteFromBasketAPI(item.basket_id, item.id, item.count - 1)
     }

@@ -3,7 +3,7 @@ import {
     ACTIVATION_ROUTE,
     ADMIN_ROUTE,
     CATALOG_ROUTE,
-    LOGIN_ROUTE,
+    LOGIN_ROUTE, PRODUCT_ROUTE,
     PROFILE_ROUTE,
     REGISTRATION_ROUTE
 } from "./utils/consts";
@@ -38,7 +38,7 @@ export const publicRoutes =[
         Component: <Auth/>,
     },
     {
-        path: PROFILE_ROUTE + '/:id',
+        path: PRODUCT_ROUTE + '/:id',
         Component: <ProductPage/>,
     },
 

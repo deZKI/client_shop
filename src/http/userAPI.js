@@ -36,14 +36,37 @@ export function basketAPI() {
     return $authHost.get('api/baskets/')
 }
 
+export async function addToBasketAPI(product_id, quantity = 1) {
+    try {
+        const {data} = await $authHost.post(`/api/baskets/`, {
+            product_id,
+            quantity,
+        });
+        return data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export async function addListToBasketAPI(data) {
+    let products = data.items.map(item => ({ product_id: item.id , quantity: item.count}));
+
+    try {
+        await $authHost.post(`/api/baskets/`, products);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
 export async function deleteFromBasketAPI(basketId, product_id, quantity) {
     try {
 
         if (quantity <= 0) {
-            const {data} = await $authHost.delete(`/api/baskets/${basketId}/`, {product_id});
+            const {data} = await $authHost.delete(`/api/baskets/${product_id}/`, );
             return data;
         } else {
-            const {data} = await $authHost.put(`/api/baskets/${basketId}/`, {product_id, quantity});
+            const {data} = await $authHost.put(`/api/baskets/${product_id}/`, {quantity});
             return data;
         }
     } catch (error) {

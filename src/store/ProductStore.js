@@ -2,43 +2,14 @@ import {makeAutoObservable} from "mobx";
 
 export default class ProductStore {
     constructor() {
-        this._tags = [
-        ]
-        this._products = [
-            {
-                name: "Product 1",
-                id: 1,
-                rating: 4.5,
-                price: 1000.00,
-                img_name: "product1.jpg"
-            },
-            {
-                name: "Product 2",
-                id: 2,
-                rating: 3.8,
-                price: 1000.00,
-                img_name: "product2.jpg"
-            },
-            {
-                name: "Product 3",
-                id: 3,
-                rating: 4.2,
-                price: 1000.00,
-                img_name: "product3.jpg"
-            },
-            {
-                name: "Product 4",
-                id: 4,
-                rating: 4.9,
-                img_name: "product4.jpg",
-                price: 1000.00,
-            }
-        ]
+        this._tags = []
+        this._colors = []
+        this._products = []
         this._selectedTag = {}
-        this._page = 1
+        this._page = 0
         this._totalCount = 0
-        this._limit = 3
-        this._price = 1000
+        this._limit = 0
+        this._price = 0
         makeAutoObservable(this)
     }
 
@@ -53,21 +24,21 @@ export default class ProductStore {
     setTags(tags){
         this._tags = tags
     }
-    setSelectedTags(tags) {
-        this.setPage(1)
-        this._selectedTag = tags
+
+    setColors(tags){
+        this._colors = tags
     }
 
     setPage(page) {
         this._page = page
     }
 
-    setTotalCount(count) {
-        this._totalCount = count
-    }
-
     get tags() {
         return this._tags
+    }
+
+    get colors() {
+        return this._colors
     }
 
     get price() {
@@ -78,9 +49,6 @@ export default class ProductStore {
         return this._products
     }
 
-    get selectedTag() {
-        return this._selectedTag
-    }
 
     get totalCount() {
         return this._totalCount

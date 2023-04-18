@@ -7,3 +7,5 @@ export const SHOP_ROUTE = '/'
 export const CATALOG_ROUTE = '/catalog'
 export const PRODUCT_ROUTE = '/products'
 export const ACTIVATION_ROUTE = 'api/auth/activate/:uid/:token/'
+
+export const MEDIA_URL = 'http://localhost:8000/media/'

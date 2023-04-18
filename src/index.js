@@ -8,13 +8,13 @@ import {BasketContextProvider} from "./store/BasketStore";
 export const Context = createContext(null)
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <BasketContextProvider>
         <Context.Provider value={{
             user: new UserStore(),
             products: new ProductStore(),
         }}>
+            <BasketContextProvider>
                 <App/>
+            </BasketContextProvider>
         </Context.Provider>
-    </BasketContextProvider>
 );
 

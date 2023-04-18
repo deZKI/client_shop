@@ -1,11 +1,10 @@
 import React, {useContext} from 'react';
 import {observer} from "mobx-react-lite";
-import {Context} from "../index";
-import {Accordion, Card, Form} from 'react-bootstrap';
+import {Context} from "../../index";
+import {Accordion, Card} from 'react-bootstrap';
 
-const TagBar = observer(() => {
+const TagBar = observer((props) => {
     const {products} = useContext(Context)
-    // console.log(product.tags)
     return (
         <Card>
             <Accordion.Item eventKey="0">
@@ -14,14 +13,12 @@ const TagBar = observer(() => {
             <Accordion.Collapse eventKey="0">
                 <Card.Body>
                     {products.tags.map((tag) => (
-                        <Form.Check
-                            type="checkbox"
-                            label={tag.name}
-                            style={{cursor: 'pointer'}}
-                            checked={tag.id === products.selectedTag.id}
-                            onClick={() => products.setSelectedTags(tag)}
-                            key={tag.id}
-                        />
+                        <li style={{'listStyleType': 'none'}} key={tag.slug}>
+                            <input type="checkbox"
+                                   checked={tag.isChecked}
+                                   name="tags" value={tag.slug} onChange={props.change}/>
+                            <span>{tag.name}</span>
+                        </li>
                     ))}
                 </Card.Body>
             </Accordion.Collapse>

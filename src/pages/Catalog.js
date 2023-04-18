@@ -1,10 +1,12 @@
-import React, {useContext, useEffect} from 'react';
-import {Accordion, Container} from "react-bootstrap";
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {Accordion, Container, Col} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
-import TagBar from "../components/TagBar";
+import TagBar from "../components/Bars/TagBar";
+import ColorBar from "../components/Bars/ColorBar";
 import ProductList from "../components/ProductList";
 import {Context} from "../index";
-import {fetchTags} from "../http/ProductAPI";
+import {fetchColors, fetchProducts, fetchTags} from "../http/ProductAPI";
+import {useLocation, useNavigate} from "react-router-dom";
 // import BrandBar from "../components/BrandBar";
 // import {observer} from "mobx-react-lite";
 // import {Context} from "../index";
@@ -13,22 +15,86 @@ import {fetchTags} from "../http/ProductAPI";
 
 const Catalog = () => {
     const {products} = useContext(Context)
+    const navigate = useNavigate();
+    const [timerId, setTimerId] = useState(null);
+    const [paramForm, setParamForm] = useState('');
+    const formRef = useRef();
+    const location = useLocation();
+
     useEffect(() => {
-        fetchTags().then(data => products.setTags(data))
-    }, [])
+        const fetchData = async () => {
+            try {
+                const tagsData = await fetchTags();
+                const colorData = await fetchColors()
+                const searchParams = new URLSearchParams(location.search);
+                const paramFormFromUrl = Array.from(searchParams.entries())
+                    .map(([key, value]) => `${key}=${value}`)
+                    .join('&');
+                console.log(searchParams.getAll('tags'))
+
+                const tagSlugs = searchParams.get('tags')?.split(',') || [];
+                const colorSlugs = searchParams.get('colors')?.split(',') || [];
+
+                for (const tag of tagsData) {
+                    tag.isChecked = tagSlugs.includes(tag.slug);
+                }
+                for (const color of colorData) {
+                    color.isChecked = colorSlugs.includes(color.slug);
+                }
+
+                const productsData = await fetchProducts(paramFormFromUrl);
+                products.setProducts(productsData.products);
+                products.setTags(tagsData)
+                products.setColors(colorData)
+                productsData.setPage(productsData.page_current_number);
+
+                setParamForm(paramFormFromUrl);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchData();
+    }, [location.search, products]);
+
+
+    const change = (event) => {
+        // event.preventDefault();
+        // clearTimeout(timerId);
+        //
+        const form = formRef.current;
+        // if (!form) return;
+        //
+        const params = new URLSearchParams(new FormData(form));
+        const keys = new Set(params.keys());
+        let newParamForm = '';
+
+        for (const key of keys) {
+            newParamForm = key + '=' + params.getAll(key).join(',') + '&' + newParamForm;
+        }
+        setParamForm(newParamForm);
+        setTimerId(
+            setTimeout(() => {
+                navigate(`?${newParamForm}`);
+            }, 100)
+        );
+    };
+
+
     return (
         <Container>
             <Row className="mt-2">
-                <div className="col-md-3">
-                    <Accordion defaultActiveKey={['0']} alwaysOpen>
-                        <TagBar/>
-                    </Accordion>
-                </div>
-                <div className="col-md-9">
-                    <div className="row">
-                        <ProductList />
-                    </div>
-                </div>
+                <Col md={3}>
+                    <form action="" method="get" id="filter" ref={formRef}>
+                        <Accordion defaultActiveKey={['0']} alwaysOpen>
+                            <TagBar change={change}/>
+                            <ColorBar change={change}/>
+                        </Accordion>
+                    </form>
+                </Col>
+                <Col md={9}>
+                    <ProductList/>
+                </Col>
             </Row>
         </Container>
     );

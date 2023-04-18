@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import {NavLink, useLocation, useNavigate} from "react-router-dom";
 import {CATALOG_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE} from "../utils/consts";
-import {basketAPI, loginAPI, registrationAPI} from "../http/userAPI";
+import {addListToBasketAPI, basketAPI, loginAPI, registrationAPI} from "../http/userAPI";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
 import {BasketContext} from "../store/BasketStore";
@@ -31,9 +31,13 @@ const Auth = observer(() => {
         try {
             if (isLogin) {
                 loginAPI(username, password).then(() => {
-                    fetchBasket()
                     user.setUser(username)
                     user.setIsAuth(true)
+                    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+                    // Отправить товары на сервер
+                    addListToBasketAPI(cartItems).then(() => {
+                        fetchBasket()
+                    });
                     history(CATALOG_ROUTE)
                 }).catch((error) => {
                     // Здесь выполняется код при возникновении ошибки в методе login

@@ -16,16 +16,17 @@ const App = observer(() => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        basketAPI()
-            .then((response) => response) // Распарсим JSON-ответ
-            .then((data) => {
-                user.setIsAuth(true)
-                updateBasket(data.data);
-                setLoading(false);
-            })
-            .catch((error) => console.log(error)).finally(
-            setLoading(false)
-        );
+            basketAPI()
+                .then((response) => response) // Распарсим JSON-ответ
+                .then((data) => {
+                    user.setIsAuth(true)
+                    updateBasket(data.data);
+                    setLoading(false);
+                })
+                .catch((error) => console.log(error)).finally(
+                setLoading(false)
+            );
+        setLoading(false)
     }, [])
 
     if (loading) {
